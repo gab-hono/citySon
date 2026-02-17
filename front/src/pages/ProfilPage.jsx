@@ -1,12 +1,8 @@
 function ProfilPage() {
-
   return (
-    <>
-    <h1>
-        Profil   
-    </h1>
-    </>
+    <div className="page">
+      <h1>Mon Profil</h1>
+    </div>
   )
 }
-
 export default ProfilPage

@@ -11,8 +11,8 @@ export const router = createBrowserRouter([
         element: <App />,
         children: [
             { path: "profil", element: <ProfilPage />},
-            { path: "profil", element: <AjouterPinPage />},
-            { path: "profil", element: <FavoritesPage />}
+            { path: "ajouter", element: <AjouterPinPage />},
+            { path: "favorites", element: <FavoritesPage />}
         ]
     }
 ])

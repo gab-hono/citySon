@@ -1,12 +1,8 @@
 function AjouterPinPage() {
-
   return (
-    <>
-    <h1>
-      Ajouter Pin
-    </h1>
-    </>
+    <div className="page">
+      <h1>Ajouter un son</h1>
+    </div>
   )
 }
-
 export default AjouterPinPage
