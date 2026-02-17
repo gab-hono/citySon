@@ -9,7 +9,7 @@
   --color-bg: #0e0e0e;
   --color-surface: #1a1a1a;
   --color-border: #2a2a2a;
-  --color-accent: #c8f135;   /* verde lima — puedes cambiar */
+  --color-accent: #c8f135;
   --color-text: #f0f0f0;
   --color-muted: #888;
   --font: 'Inter', sans-serif;
@@ -94,7 +94,7 @@ body {
   height: calc(100vh - var(--header-height) - 48px);
 }
 
-.home__hero {
+.home-box {
   padding: 3rem 1.5rem 2rem;
   display: flex;
   flex-direction: column;
@@ -102,20 +102,20 @@ body {
   max-width: 600px;
 }
 
-.home__title {
+.home-title {
   font-size: clamp(2.5rem, 8vw, 5rem);
   font-weight: 800;
   color: var(--color-accent);
   line-height: 1;
 }
 
-.home__subtitle {
+.home-subtitle {
   color: var(--color-muted);
   font-size: 1rem;
   line-height: 1.6;
 }
 
-.home__map-placeholder {
+.home-map-placeholder {
   flex: 1;
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
@@ -180,7 +180,7 @@ body {
     display: none; /* En móvil solo muestra el CTA — podés agregar un menú hamburguesa después */
   }
 
-  .home__hero {
+  .home-box {
     padding: 2rem 1rem 1.5rem;
   }
 }

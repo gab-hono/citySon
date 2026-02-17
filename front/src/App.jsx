@@ -1,5 +1,6 @@
 import './App.css'
 import { Link, Outlet, useLocation } from 'react-router'
+import MapView from './components/MapView';
 
 function App() {
   const location = useLocation();
@@ -19,15 +20,15 @@ function App() {
       <main className="main">
         {isHome ? (
           <div className="home">
-            <div className="home__hero">
-              <h1 className="home__title">CitySon</h1>
-              <p className="home__subtitle">
-                Cartographie sonore de Paris — explorez, écoutez, déposez vos sons.
+            <div className="home-box">
+              <h1 className="home-title">CitySon</h1>
+              <p className="home-subtitle">
+                Cartographie sonore de Paris. Explorez, écoutez, déposez vos sons.
               </p>
               <Link to="/ajouter" className="btn btn--primary">Déposer un son</Link>
             </div>
-            <div className="home__map-placeholder">
-              <span>🗺 Carte interactive — à venir</span>
+            <div className="home-map-placeholder">
+              <MapView />
             </div>
           </div>
         ) : (
@@ -36,7 +37,7 @@ function App() {
       </main>
 
       <footer className="footer">
-        <p>CitySon — créé par <strong>©Gabriel Hono</strong></p>
+        <p>CitySon, une application de performance sonore créé par <strong>©Gabriel Hono</strong></p>
       </footer>
     </div>
   )
