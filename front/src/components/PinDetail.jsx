@@ -1,49 +1,60 @@
-import './PinDetail.css'
+import './PinDetail.css' // Specific file for this component
 
 export default function PinDetail({ pin, onClose }) {
-  if (!pin) return null
+  if (!pin) return null // If there's not a pin selected, nothing happens
 
   return (
+    // THIS WHOLE DIV IS THE BOX THAT OPENS ONCE A PIN IS SELECTED
     <div className="pin-detail">
-      <div className="pin-detail__header">
-        <h2 className="pin-detail__title">{pin.title}</h2>
-        <button className="pin-detail__close" onClick={onClose}>✕</button>
+
+      {/* HEADER OF THE BOX */}
+      <div className="pin-detail-header">
+        <h2 className="pin-detail-title">{pin.title}</h2>
+        <button className="pin-detail-close" onClick={onClose}>✕</button>
       </div>
 
-      <div className="pin-detail__content">
-        <div className="pin-detail__field">
-          <span className="pin-detail__label">Auteur</span>
-          <span className="pin-detail__value">{pin.author}</span>
+
+      {/* SPECIFIC CONTENT OF THE BOX */}
+      <div className="pin-detail-content">
+
+        {/* PLACE WHERE AUTHOR AND LISTENING PLACE CAN GO IN FLEX VIEW */}
+        <div className="pin-detail-field">
+          <span className="pin-detail-label">Auteur</span>
+          <span className="pin-detail-text">{pin.author_name}</span>
         </div>
 
-        <div className="pin-detail__field">
-          <span className="pin-detail__label">Lieu d'écoute</span>
-          <span className="pin-detail__value">{pin.location_name}</span>
+        <div className="pin-detail-field">
+          <span className="pin-detail-label">Lieu d'écoute</span>
+          <span className="pin-detail-text">{pin.location_name}</span>
         </div>
 
+        {/* PLACE FOR THE AUDIO LINK */}
         {pin.audio_url && (
-          <div className="pin-detail__field pin-detail__field--audio">
-            <span className="pin-detail__label">Audio</span>
-            <audio controls className="pin-detail__audio">
-              <source src={pin.audio_url} type="audio/mpeg" />
-              <a href={pin.audio_url} target="_blank" rel="noopener noreferrer">
-                Ouvrir le fichier
-              </a>
-            </audio>
+          <div className="pin-detail-field">
+            <span className="pin-detail-label">Lien à l'audio</span>
+            <a
+              className="pin-detail-text" 
+              title={pin.title}
+              href={pin.audio_url}
+              target="_blank">
+                Lien externe vers {pin.title}
+            </a>
           </div>
         )}
 
+        {/* PLACE FOR THE DESCRIPTION OF THE PIECE */}
         {pin.inspiration_text && (
-          <div className="pin-detail__field pin-detail__field--full">
-            <span className="pin-detail__label">Description</span>
-            <p className="pin-detail__description">{pin.inspiration_text}</p>
+          <div className="pin-detail-field pin-detail-field--full">
+            <span className="pin-detail-label">Description</span>
+            <p className="pin-detail-text">{pin.inspiration_text}</p>
           </div>
         )}
 
-        {pin.edit_technology && (
-          <div className="pin-detail__field">
-            <span className="pin-detail__label">Technologies pour la création</span>
-            <span className="pin-detail__value">{pin.edit_technology}</span>
+        {/* PLACE FOR THE TECHNOLOGIES USED IN THE RECORDING/MIXING */}
+        {pin.technology && (
+          <div className="pin-detail-field pin-detail-field--full">
+            <span className="pin-detail-label">Technologies pour la création</span>
+            <span className="pin-detail-text">{pin.technology}</span>
           </div>
         )}
       </div>

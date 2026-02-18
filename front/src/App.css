@@ -124,6 +124,8 @@ body {
   justify-content: center;
   color: var(--color-muted);
   font-size: 1rem;
+  position: relative;
+  overflow: hidden;
 }
 
 /* ── Botón ── */
@@ -177,7 +179,7 @@ body {
   }
 
   .nav-link:not(.nav-link--cta) {
-    display: none; /* En móvil solo muestra el CTA — podés agregar un menú hamburguesa después */
+    display: none;
   }
 
   .home-box {
