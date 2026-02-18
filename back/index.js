@@ -1,12 +1,14 @@
 require('dotenv').config();
 
 const express = require('express');
+const cors = require('cors');
 const { neon } = require('@neondatabase/serverless');
 
 const app = express();
 const PORT = process.env.PORT || 4242;
 const sql = neon(`${process.env.DATABASE_URL}`);
 
+app.use(cors());
 app.use(express.json());
 
 app.get('/pins', async (_, res)=> {

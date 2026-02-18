@@ -1,10 +1,13 @@
 import './App.css'
 import { Link, Outlet, useLocation } from 'react-router'
-import MapView from './components/MapView';
+import MapView from './components/MapView'
+import PinDetail from './components/PinDetail'
+import { useState } from 'react'
 
 function App() {
-  const location = useLocation();
-  const isHome = location.pathname === '/';
+  const location = useLocation()
+  const isHome = location.pathname === '/'
+  const [selectedPin, setSelectedPin] = useState(null)
 
   return (
     <div className="app-wrapper">
@@ -28,7 +31,13 @@ function App() {
               <Link to="/ajouter" className="btn btn--primary">Déposer un son</Link>
             </div>
             <div className="home-map-placeholder">
-              <MapView />
+              <MapView onPinSelect={setSelectedPin} />
+              {selectedPin && (
+                <PinDetail 
+                  pin={selectedPin} 
+                  onClose={() => setSelectedPin(null)} 
+                />
+              )}
             </div>
           </div>
         ) : (
