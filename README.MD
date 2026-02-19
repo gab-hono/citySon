@@ -1,6 +1,6 @@
 # CitySon 🎧🗺️
 
-**EN** | [FR](#français)
+[EN](#english) | [FR](#français)
 
 ![alt text](./front/public/images/AppOverview.png "App view")
 
