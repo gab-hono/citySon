@@ -5,7 +5,7 @@
   right: 0;
   background: var(--color-surface);
   border-top: 2px solid var(--color-accent);
-  max-height: 40vh;
+  max-height: 50vh;
   overflow-y: auto;
   z-index: 1000;
   animation: slideUp 0.3s ease-out;
@@ -95,7 +95,7 @@
 /* Responsive desktop */
 @media (min-width: 768px) {
   .pin-detail {
-    max-height: 40vh;
+    max-height: 50vh;
   }
 
   .pin-detail-content {

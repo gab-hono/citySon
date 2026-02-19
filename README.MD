@@ -2,6 +2,10 @@
 
 **EN** | [FR](#français)
 
+![alt text](./front/public/images/AppOverview.png "App view")
+
+![alt text](./front/public/images/viewPin.png "View of a selcted pin")
+
 ---
 
 ## English
@@ -9,6 +13,8 @@
 ### Overview
 
 CitySon is an interactive sound mapping web application for Paris. Users can explore site-specific audio pieces tied to precise locations, creating a living sonic archive of the city.
+
+
 
 ### Current Status
 
@@ -49,15 +55,9 @@ CitySon is an interactive sound mapping web application for Paris. Users can exp
 **Status:** Not started
 
 - Click on map to set coordinates
-- File upload for audio (.mp3, .wav, .m4a)
-- Integration with Cloudinary for audio storage
+- Audio file up through a link
 - Form validation
 - Success/error feedback
-
-**Technical requirements:**
-- Frontend: FormData upload with drag-and-drop
-- Backend: Multer + Cloudinary integration
-- Database: INSERT query to `audio_pin` table
 
 ---
 
@@ -71,11 +71,6 @@ CitySon is an interactive sound mapping web application for Paris. Users can exp
 - Protected routes
 - User profile display
 
-**Technical requirements:**
-- Backend: JWT or session-based auth
-- Password hashing (bcrypt)
-- Secure cookie handling
-- Frontend: Auth context/state management
 
 ---
 
@@ -87,11 +82,6 @@ CitySon is an interactive sound mapping web application for Paris. Users can exp
 - `/favorites` page with saved pins
 - Remove from favorites functionality
 - Visual indicator for favorited pins on map
-
-**Technical requirements:**
-- Backend: POST/DELETE endpoints for `favorites` table
-- User authentication required
-- Optimistic UI updates
 
 ---
 
@@ -204,15 +194,9 @@ CitySon est une application web de cartographie sonore interactive pour Paris. L
 **Statut :** Non commencé
 
 - Clic sur la carte pour définir les coordonnées
-- Upload de fichier audio (.mp3, .wav, .m4a)
-- Intégration avec Cloudinary pour le stockage audio
+- Ajout d'un audio via un lien externe
 - Validation du formulaire
 - Feedback de succès/erreur
-
-**Exigences techniques :**
-- Frontend : Upload FormData avec drag-and-drop
-- Backend : Intégration Multer + Cloudinary
-- Base de données : Requête INSERT dans la table `audio_pin`
 
 ---
 
@@ -225,12 +209,6 @@ CitySon est une application web de cartographie sonore interactive pour Paris. L
 - Gestion de session
 - Routes protégées
 - Affichage du profil utilisateur
-
-**Exigences techniques :**
-- Backend : Auth basée sur JWT ou session
-- Hachage de mot de passe (bcrypt)
-- Gestion sécurisée des cookies
-- Frontend : Contexte/gestion d'état d'authentification
 
 ---
 
@@ -246,7 +224,6 @@ CitySon est une application web de cartographie sonore interactive pour Paris. L
 **Exigences techniques :**
 - Backend : Endpoints POST/DELETE pour la table `favorites`
 - Authentification utilisateur requise
-- Mises à jour UI optimistes
 
 ---
 
@@ -277,7 +254,7 @@ CitySon est une application web de cartographie sonore interactive pour Paris. L
 
 **Futur :**
 - Authentification utilisateur
-- Upload audio avec Cloudinary
+- Option de upload un audio file directement (avec un Storage)
 - Système de favoris de base
 - Page de profil utilisateur
 - Raffinements UI/UX
@@ -300,10 +277,6 @@ CitySon est une application web de cartographie sonore interactive pour Paris. L
 - Node.js + Express.js
 - Neon PostgreSQL
 - CORS activé
-
-**Intégrations prévues :**
-- Cloudinary (stockage audio)
-- JWT (authentification)
 
 ### Contribuer
 
