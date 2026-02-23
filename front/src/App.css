@@ -25,7 +25,7 @@
 }
 
 
-/* RESET */
+/* ── RESET ── */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -33,7 +33,7 @@
 }
 
 
-/* BASE */
+/* ── BASE ── */
 body {
   background: var(--color-bg);
   color: var(--color-text);
@@ -152,15 +152,15 @@ button {
 
 
 /* ══════════════════════════════════════════════
-   HOME PAGE: MAP + HERO
+   HOME PAGE — MAP + HERO
    ══════════════════════════════════════════════ */
 
-/* MOBILE: STACKED LAYOUT (HERO ON TOP, MAP BELOW) */
+/* MOBILE: STACKED LAYOUT (HERO ON TOP, MAP BELOW)
+   NOTE: explicit heights are required so Leaflet can measure
+   its container — flex children with no height collapse to 0 */
 .home {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 0;
 }
 
 /* HERO SECTION WITH TITLE AND CTA */
@@ -172,7 +172,7 @@ button {
 }
 
 .home-title {
-  font-size: clamp(2.5rem, 10vw, 5rem);
+  font-size: clamp(2rem, 10vw, 5rem);
   font-weight: 800;
   color: var(--color-accent);
   line-height: 1;
@@ -184,33 +184,39 @@ button {
   line-height: 1.6;
 }
 
-/* MAP CONTAINER FILLS REMAINING SPACE */
+/* MAP CONTAINER — FIXED HEIGHT ON MOBILE SO LEAFLET CAN RENDER */
 .home-map-placeholder {
-  flex: 1;
-  min-height: 50vh;
+  height: 55vw;
+  min-height: 280px;
+  max-height: 420px;
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
   position: relative;
   overflow: hidden;
 }
 
-/* DESKTOP: SIDE-BY-SIDE LAYOUT: HERO LEFT, MAP RIGHT */
+/* DESKTOP: TRUE 50/50 SPLIT — HERO LEFT, MAP RIGHT */
 @media (min-width: 768px) {
   .home {
     flex-direction: row;
     height: calc(100vh - var(--header-height) - 41px);
   }
 
+  /* HERO TAKES EXACTLY HALF THE WIDTH */
   .home-box {
-    width: 320px;
+    width: 50%;
     flex-shrink: 0;
-    padding: 3rem 1.5rem 2rem;
+    padding: 3rem 2rem;
     border-right: 1px solid var(--color-border);
     justify-content: center;
   }
 
+  /* MAP TAKES THE OTHER HALF — FULL HEIGHT */
   .home-map-placeholder {
+    width: 50%;
+    height: 100%;
     min-height: unset;
+    max-height: unset;
     border-top: none;
   }
 }
@@ -535,7 +541,7 @@ button {
   margin: 0;
 }
 
-/* CLOSE BUTTON - NO BACKGROUND */
+/* CLOSE BUTTON — NO BACKGROUND */
 .pin-detail-close {
   background: none;
   border: none;
