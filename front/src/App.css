@@ -1,10 +1,13 @@
-/* ── Reset y base ── */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* ============================================================
+   APP.CSS — GLOBAL STYLESHEET FOR CITYSON
+   Single source of truth for all styles.
+   Mobile-first approach: base styles target mobile,
+   media queries progressively enhance for larger screens.
+   Component-specific overrides use Tailwind inline where needed.
+   ============================================================ */
 
+
+/* ── DESIGN TOKENS ── */
 :root {
   --color-bg: #0e0e0e;
   --color-surface: #1a1a1a;
@@ -14,29 +17,77 @@
   --color-muted: #888;
   --font: 'Inter', sans-serif;
   --header-height: 60px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 24px;
+  --transition: 0.2s ease;
 }
 
+
+/* RESET */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+/* BASE */
 body {
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font);
   min-height: 100vh;
+  /* OVERRIDE VITE DEFAULT: remove center alignment */
+  display: block;
+  place-items: unset;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Layout ── */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+
+/* ══════════════════════════════════════════════
+   LAYOUT
+   ══════════════════════════════════════════════ */
+
+/* MAIN APP SHELL — FULL HEIGHT COLUMN LAYOUT */
 .app-wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* ── Header ── */
+/* MAIN CONTENT GROWS TO FILL AVAILABLE SPACE */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* ══════════════════════════════════════════════
+   HEADER
+   ══════════════════════════════════════════════ */
+
+/* STICKY HEADER STAYS AT TOP WHILE SCROLLING */
 .header {
   height: var(--header-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.5rem;
+  padding: 0 1rem;
   border-bottom: 1px solid var(--color-border);
   position: sticky;
   top: 0;
@@ -48,33 +99,34 @@ body {
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--color-accent);
-  text-decoration: none;
   letter-spacing: 0.05em;
 }
 
+/* NAVIGATION LINK GROUP */
 .nav {
   display: flex;
-  gap: 1.5rem;
+  gap: 0.8rem;
   align-items: center;
 }
 
 .nav-link {
   color: var(--color-muted);
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: color 0.2s;
+  font-size: 0.85rem;
+  transition: color var(--transition);
 }
 
 .nav-link:hover {
   color: var(--color-text);
 }
 
+/* CTA BUTTON STYLE FOR THE ADD SOUND LINK */
 .nav-link--cta {
   color: var(--color-accent);
   border: 1px solid var(--color-accent);
-  padding: 0.4rem 0.9rem;
-  border-radius: 20px;
-  font-size: 0.85rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  white-space: nowrap;
 }
 
 .nav-link--cta:hover {
@@ -82,28 +134,45 @@ body {
   color: #000;
 }
 
-/* ── Main ── */
-.main {
-  flex: 1;
+@media (min-width: 768px) {
+  .header {
+    padding: 0 1.5rem;
+  }
+  .nav {
+    gap: 1.5rem;
+  }
+  .nav-link {
+    font-size: 0.9rem;
+  }
+  .nav-link--cta {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.9rem;
+  }
 }
 
-/* ── Home ── */
+
+/* ══════════════════════════════════════════════
+   HOME PAGE: MAP + HERO
+   ══════════════════════════════════════════════ */
+
+/* MOBILE: STACKED LAYOUT (HERO ON TOP, MAP BELOW) */
 .home {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - var(--header-height) - 48px);
+  flex: 1;
+  min-height: 0;
 }
 
+/* HERO SECTION WITH TITLE AND CTA */
 .home-box {
-  padding: 3rem 1.5rem 2rem;
+  padding: 2rem 1rem 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  max-width: 600px;
 }
 
 .home-title {
-  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-size: clamp(2.5rem, 10vw, 5rem);
   font-weight: 800;
   color: var(--color-accent);
   line-height: 1;
@@ -111,36 +180,92 @@ body {
 
 .home-subtitle {
   color: var(--color-muted);
-  font-size: 1rem;
+  font-size: 0.95rem;
   line-height: 1.6;
 }
 
+/* MAP CONTAINER FILLS REMAINING SPACE */
 .home-map-placeholder {
   flex: 1;
+  min-height: 50vh;
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-muted);
-  font-size: 1rem;
   position: relative;
   overflow: hidden;
 }
 
-/* ── Botón ── */
+/* DESKTOP: SIDE-BY-SIDE LAYOUT: HERO LEFT, MAP RIGHT */
+@media (min-width: 768px) {
+  .home {
+    flex-direction: row;
+    height: calc(100vh - var(--header-height) - 41px);
+  }
+
+  .home-box {
+    width: 320px;
+    flex-shrink: 0;
+    padding: 3rem 1.5rem 2rem;
+    border-right: 1px solid var(--color-border);
+    justify-content: center;
+  }
+
+  .home-map-placeholder {
+    min-height: unset;
+    border-top: none;
+  }
+}
+
+
+/* ══════════════════════════════════════════════
+   INNER PAGES (PROFIL, FAVORITES, AJOUTER)
+   ══════════════════════════════════════════════ */
+
+/* CENTERED CONTENT CONTAINER WITH MAX WIDTH */
+.page {
+  padding: 1.5rem 1rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.page h1 {
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+  color: var(--color-accent);
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding: 2rem 2rem;
+    max-width: 860px;
+  }
+
+  .page h1 {
+    font-size: 1.8rem;
+  }
+}
+
+
+/* ══════════════════════════════════════════════
+   BUTTONS
+   ══════════════════════════════════════════════ */
+
 .btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
   padding: 0.6rem 1.4rem;
-  border-radius: 24px;
+  border-radius: var(--radius-full);
   font-size: 0.9rem;
-  text-decoration: none;
   font-weight: 600;
   cursor: pointer;
   border: none;
-  transition: all 0.2s;
+  transition: all var(--transition);
+  text-decoration: none;
 }
 
+/* PRIMARY: ACCENT BACKGROUND */
 .btn--primary {
   background: var(--color-accent);
   color: #000;
@@ -150,39 +275,351 @@ body {
   opacity: 0.85;
 }
 
-/* ── Páginas internas ── */
-.page {
-  padding: 2rem 1.5rem;
-  max-width: 800px;
-  margin: 0 auto;
+/* GHOST: TRANSPARENT WITH BORDER */
+.btn--ghost {
+  background: transparent;
+  color: var(--color-muted);
+  border: 1px solid var(--color-border);
 }
 
-.page h1 {
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
+.btn--ghost:hover {
+  border-color: var(--color-text);
+  color: var(--color-text);
+}
+
+
+/* ══════════════════════════════════════════════
+   FORM (AJOUTER PIN PAGE)
+   ══════════════════════════════════════════════ */
+
+/* FORM VERTICAL STACK */
+.ajouter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* EACH FIELD: LABEL + INPUT STACKED */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+/* LABEL STYLE */
+.form-field label,
+.form-fieldset legend {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+  letter-spacing: 0.02em;
+}
+
+/* REQUIRED ASTERISK IN ACCENT COLOR */
+.form-field label span,
+.form-fieldset legend span {
   color: var(--color-accent);
 }
 
-/* ── Footer ── */
+/* INPUT AND TEXTAREA BASE STYLES */
+.form-field input,
+.form-field textarea {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-family: var(--font);
+  font-size: 0.95rem;
+  padding: 0.65rem 0.9rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  width: 100%;
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  color: var(--color-muted);
+}
+
+/* ACCESSIBLE FOCUS RING */
+.form-field input:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(200, 241, 53, 0.18);
+}
+
+/* FIELDSET WRAPPING THE MAP SELECTOR */
+.form-fieldset {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+/* HINT TEXT BELOW FIELDSET LEGEND */
+.form-hint {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+
+/* LIVE COORDINATE FEEDBACK BELOW MAP */
+.coords-feedback {
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+}
+
+.coords-ok    { color: var(--color-accent); }
+.coords-empty { color: var(--color-muted); }
+
+/* SUBMIT BUTTON ALIGNED LEFT ON MOBILE, SAME ON DESKTOP */
+.ajouter-btn {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .ajouter-form {
+    gap: 1.4rem;
+  }
+
+  .ajouter-btn {
+    width: auto;
+  }
+}
+
+
+/* ══════════════════════════════════════════════
+   CONFIRMATION MODAL
+   ══════════════════════════════════════════════ */
+
+/* DARK OVERLAY COVERING ENTIRE SCREEN */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  display: flex;
+  align-items: flex-end;        /* MOBILE: SLIDES UP FROM BOTTOM */
+  justify-content: center;
+  z-index: 9999;
+  padding: 0;
+}
+
+/* MODAL CARD */
+.modal {
+  background: var(--color-surface);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: 1.5rem 1.2rem;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal h2 {
+  color: var(--color-accent);
+  font-size: 1.3rem;
+  margin-bottom: 0.4rem;
+}
+
+.modal-subtitle {
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  margin-bottom: 1.2rem;
+}
+
+/* SEMANTIC DL GRID FOR DATA SUMMARY */
+.modal-summary {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-summary dt {
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  padding-top: 2px;
+}
+
+.modal-summary dd {
+  color: var(--color-text);
+  font-size: 0.9rem;
+  word-break: break-word;
+}
+
+.modal-url {
+  color: var(--color-accent);
+  font-size: 0.82rem;
+}
+
+/* CONFIRM / CANCEL BUTTON ROW */
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.modal-actions .btn {
+  width: 100%;
+}
+
+/* DESKTOP: MODAL CENTERED, ROUNDED ALL SIDES, BUTTONS INLINE */
+@media (min-width: 768px) {
+  .modal-overlay {
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .modal {
+    border-radius: var(--radius-lg);
+    max-width: 520px;
+    padding: 2rem;
+  }
+
+  .modal-actions {
+    flex-direction: row;
+  }
+
+  .modal-actions .btn {
+    width: auto;
+  }
+}
+
+
+/* ══════════════════════════════════════════════
+   PIN DETAIL PANEL (MAP OVERLAY)
+   ══════════════════════════════════════════════ */
+
+/* PANEL SLIDES UP FROM BOTTOM OF THE MAP */
+.pin-detail {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-surface);
+  border-top: 2px solid var(--color-accent);
+  max-height: 55vh;
+  overflow-y: auto;
+  z-index: 1000;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+/* STICKY HEADER INSIDE THE PANEL */
+.pin-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  background: var(--color-surface);
+  z-index: 10;
+}
+
+.pin-detail-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  margin: 0;
+}
+
+/* CLOSE BUTTON - NO BACKGROUND */
+.pin-detail-close {
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 0.4rem;
+  line-height: 1;
+  transition: color var(--transition);
+}
+
+.pin-detail-close:hover {
+  color: var(--color-text);
+}
+
+/* SCROLLABLE CONTENT BODY */
+.pin-detail-content {
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* INDIVIDUAL LABEL + VALUE FIELD */
+.pin-detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.pin-detail-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-muted);
+  font-weight: 600;
+}
+
+.pin-detail-text {
+  color: var(--color-text);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.pin-detail-audio {
+  width: 100%;
+  height: 40px;
+  margin-top: 0.3rem;
+}
+
+/* DESKTOP: TWO-COLUMN GRID FOR PIN FIELDS */
+@media (min-width: 768px) {
+  .pin-detail-header {
+    padding: 1.2rem 1.5rem;
+  }
+
+  .pin-detail-title {
+    font-size: 1.3rem;
+  }
+
+  .pin-detail-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem 2rem;
+    padding: 1.5rem;
+  }
+
+  /* FULL-WIDTH FIELDS SPAN BOTH COLUMNS */
+  .pin-detail-field--full,
+  .pin-detail-field--audio {
+    grid-column: 1 / -1;
+  }
+}
+
+
+/* ══════════════════════════════════════════════
+   FOOTER
+   ══════════════════════════════════════════════ */
+
 .footer {
-  padding: 1rem 1.5rem;
+  padding: 0.8rem 1rem;
   border-top: 1px solid var(--color-border);
   text-align: center;
   color: var(--color-muted);
-  font-size: 0.8rem;
-}
-
-/* ── Responsive ── */
-@media (max-width: 600px) {
-  .nav {
-    gap: 0.8rem;
-  }
-
-  .nav-link:not(.nav-link--cta) {
-    display: none;
-  }
-
-  .home-box {
-    padding: 2rem 1rem 1.5rem;
-  }
+  font-size: 0.78rem;
 }

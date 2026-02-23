@@ -1,13 +1,27 @@
+/* ============================================================
+   AJOUTERPIN.JSX — "ADD A SOUND" FORM PAGE
+   Allows a user to submit a new sound pin to the database.
+   Features:
+   - Controlled form with all required fields
+   - Interactive Leaflet map for coordinate selection
+   - Confirmation modal with data summary before POST
+   - beforeunload warning if user tries to leave with unsaved data
+   Styles come from App.css (no local CSS file needed).
+   ============================================================ */
+
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import MapSelector from '../components/MapSelector'
-import './AjouterPin.css'
+
+// NO LOCAL CSS IMPORT — ALL STYLES ARE IN App.css
 
 function AjouterPinPage() {
 
   const navigate = useNavigate()
 
-  // État du formulaire (noms alignés sur la BDD)
+  /* ── FORM STATE ─────────────────────────────────────────────
+     Field names match the database column names for direct POST.
+     ─────────────────────────────────────────────────────────── */
   const [formData, setFormData] = useState({
     title: '',
     inspiration_text: '',
@@ -18,41 +32,47 @@ function AjouterPinPage() {
     longitude: '',
   })
 
-  //Le formulaire a-t-il été modifié ?
+  // TRACKS WHETHER THE FORM HAS BEEN MODIFIED (USED FOR EXIT WARNING)
   const [isModified, setIsModified] = useState(false)
 
-  // Afficher la modale de confirmation
+  // CONTROLS VISIBILITY OF THE CONFIRMATION MODAL
   const [showConfirm, setShowConfirm] = useState(false)
 
-  //Avertissement navigateur si on ferme/recharge l'onglet
+  /* ── BROWSER EXIT WARNING ───────────────────────────────────
+     Fires the native browser "leave page?" dialog if the user
+     tries to close/refresh the tab with unsaved form data.
+     Cleaned up when component unmounts.
+     ─────────────────────────────────────────────────────────── */
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       if (isModified) {
         e.preventDefault()
-        e.returnValue = ''
+        e.returnValue = '' // REQUIRED FOR CHROME TO SHOW THE DIALOG
       }
     }
     window.addEventListener('beforeunload', handleBeforeUnload)
     return () => window.removeEventListener('beforeunload', handleBeforeUnload)
   }, [isModified])
 
-  // Mise à jour des champs texte
+  /* ── HANDLERS ───────────────────────────────────────────── */
+
+  // UPDATE A TEXT FIELD AND MARK FORM AS MODIFIED
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
     setIsModified(true)
   }
 
-  // Mise à jour des coordonnées depuis la carte
+  // RECEIVE COORDINATES FROM THE MAP CLICK AND STORE IN FORM STATE
   const handleLocationSelect = (lat, lng) => {
     setFormData(prev => ({
       ...prev,
-      latitude: lat.toFixed(6),
+      latitude:  lat.toFixed(6),
       longitude: lng.toFixed(6),
     }))
     setIsModified(true)
   }
 
-  // Clic sur "Ajouter le son" → validation + modale
+  // VALIDATE FORM ON SUBMIT, THEN SHOW CONFIRMATION MODAL
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!formData.latitude || !formData.longitude) {
@@ -62,7 +82,7 @@ function AjouterPinPage() {
     setShowConfirm(true)
   }
 
-  // Confirmation → envoi au backend
+  // SEND DATA TO BACKEND AFTER USER CONFIRMS IN MODAL
   const handleConfirm = async () => {
     try {
       const response = await fetch('http://localhost:4242/nouveaupin', {
@@ -72,28 +92,35 @@ function AjouterPinPage() {
       })
       if (!response.ok) throw new Error('Erreur serveur')
 
-      setIsModified(false)   // Désactive l'alerte de sortie
+      // DISABLE EXIT WARNING BEFORE NAVIGATING AWAY
+      setIsModified(false)
       setShowConfirm(false)
-      navigate('/')        // Retour à la carte
+      navigate('/')
+
     } catch (err) {
-      console.error(err)
+      console.error('POST ERROR:', err)
       alert('❌ Une erreur est survenue. Vérifie que ton serveur tourne.')
       setShowConfirm(false)
     }
   }
 
-  // Annulation → retour au formulaire
+  // CLOSE MODAL AND RETURN TO FORM WITHOUT LOSING DATA
   const handleCancel = () => setShowConfirm(false)
 
+
+  /* ── RENDER ─────────────────────────────────────────────── */
   return (
     <div className="page">
       <h1>Ajouter un son</h1>
 
+      {/* ── MAIN FORM ── */}
       <form onSubmit={handleSubmit} noValidate className="ajouter-form">
 
-        {/* Titre */}
+        {/* TITLE FIELD */}
         <div className="form-field">
-          <label htmlFor="title">Titre du son <span aria-hidden="true">*</span></label>
+          <label htmlFor="title">
+            Titre du son <span aria-hidden="true">*</span>
+          </label>
           <input
             id="title"
             name="title"
@@ -106,9 +133,11 @@ function AjouterPinPage() {
           />
         </div>
 
-        {/* Auteur */}
+        {/* AUTHOR FIELD */}
         <div className="form-field">
-          <label htmlFor="author_name">Auteur <span aria-hidden="true">*</span></label>
+          <label htmlFor="author_name">
+            Auteur <span aria-hidden="true">*</span>
+          </label>
           <input
             id="author_name"
             name="author_name"
@@ -121,9 +150,11 @@ function AjouterPinPage() {
           />
         </div>
 
-        {/* URL Audio */}
+        {/* AUDIO URL FIELD */}
         <div className="form-field">
-          <label htmlFor="audio_url">URL de l'audio <span aria-hidden="true">*</span></label>
+          <label htmlFor="audio_url">
+            URL de l'audio <span aria-hidden="true">*</span>
+          </label>
           <input
             id="audio_url"
             name="audio_url"
@@ -136,7 +167,7 @@ function AjouterPinPage() {
           />
         </div>
 
-        {/* Lieu d'écoute */}
+        {/* LISTENING LOCATION FIELD (OPTIONAL) */}
         <div className="form-field">
           <label htmlFor="location_name">Lieu d'écoute</label>
           <input
@@ -149,8 +180,8 @@ function AjouterPinPage() {
           />
         </div>
 
-        {/* Description */}
-        <div className="form-field form-field--full">
+        {/* DESCRIPTION / INSPIRATION FIELD (OPTIONAL) */}
+        <div className="form-field">
           <label htmlFor="inspiration_text">Description / Inspiration</label>
           <textarea
             id="inspiration_text"
@@ -162,18 +193,21 @@ function AjouterPinPage() {
           />
         </div>
 
-        {/* Carte */}
-        <fieldset className="form-field form-field--full form-fieldset">
-          <legend>Localisation <span aria-hidden="true">*</span></legend>
+        {/* MAP COORDINATE SELECTOR FIELDSET */}
+        <fieldset className="form-fieldset">
+          <legend>
+            Localisation <span aria-hidden="true">*</span>
+          </legend>
           <p className="form-hint">Clique sur la carte pour placer ton son 📍</p>
 
+          {/* INTERACTIVE MAP — CALLS handleLocationSelect ON CLICK */}
           <MapSelector
             lat={formData.latitude}
             lng={formData.longitude}
             onLocationSelect={handleLocationSelect}
           />
 
-          {/* Feedback accessible en live */}
+          {/* LIVE REGION: ANNOUNCES COORDINATE CHANGES TO SCREEN READERS */}
           <div aria-live="polite" className="coords-feedback">
             {formData.latitude && formData.longitude ? (
               <span className="coords-ok">
@@ -185,13 +219,15 @@ function AjouterPinPage() {
           </div>
         </fieldset>
 
+        {/* SUBMIT BUTTON */}
         <button type="submit" className="btn btn--primary ajouter-btn">
           Ajouter le son
         </button>
 
       </form>
 
-      {/* MODALE DE CONFIRMATION */}
+
+      {/* ── CONFIRMATION MODAL ── */}
       {showConfirm && (
         <div
           className="modal-overlay"
@@ -201,8 +237,11 @@ function AjouterPinPage() {
         >
           <div className="modal">
             <h2 id="modal-title">Confirmer l'ajout</h2>
-            <p className="modal-subtitle">Résumé des données qui seront enregistrées :</p>
+            <p className="modal-subtitle">
+              Résumé des données qui seront enregistrées :
+            </p>
 
+            {/* SEMANTIC DEFINITION LIST FOR DATA SUMMARY */}
             <dl className="modal-summary">
               <dt>Titre</dt>
               <dd>{formData.title}</dd>
@@ -223,6 +262,7 @@ function AjouterPinPage() {
               <dd>{formData.latitude}, {formData.longitude}</dd>
             </dl>
 
+            {/* ACTION BUTTONS: CONFIRM OR GO BACK TO EDITING */}
             <div className="modal-actions">
               <button onClick={handleConfirm} className="btn btn--primary">
                 ✅ Confirmer
@@ -234,6 +274,7 @@ function AjouterPinPage() {
           </div>
         </div>
       )}
+
     </div>
   )
 }
