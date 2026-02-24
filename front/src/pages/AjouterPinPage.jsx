@@ -6,60 +6,34 @@
    - Interactive Leaflet map for coordinate selection
    - Confirmation modal with data summary before POST
    - beforeunload warning if user tries to leave with unsaved data
-   Styles come from App.css (no local CSS file needed).
    ============================================================ */
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import MapSelector from '../components/MapSelector'
+import ConfirmModal from '../components/ConfirmModal'
 
-// NO LOCAL CSS IMPORT — ALL STYLES ARE IN App.css
+const INITIAL_FORM = {
+  title: '',
+  inspiration_text: '',
+  audio_url: '',
+  author_name: '',
+  location_name: '',
+  latitude: '',
+  longitude: '',
+}
 
 function AjouterPinPage() {
 
-  const navigate = useNavigate()
+  const navigate = useNavigate() // ALLOWS TO NAVIGATE DIRECTLY AFTER A BUTTON ACTION
+  const [formData, setFormData] = useState(INITIAL_FORM) // DECLARES THE INITIAL DATA OF THE FORM AND STORES THE INFORMATION ON THE INPUT FIELDS
+  const [showConfirm, setShowConfirm] = useState(false) // CONTROLS THE VISIBILITY OF THE CONFIRMATION MODAL
 
-  /* ── FORM STATE ─────────────────────────────────────────────
-     Field names match the database column names for direct POST.
-     ─────────────────────────────────────────────────────────── */
-  const [formData, setFormData] = useState({
-    title: '',
-    inspiration_text: '',
-    audio_url: '',
-    author_name: '',
-    location_name: '',
-    latitude: '',
-    longitude: '',
-  })
-
-  // TRACKS WHETHER THE FORM HAS BEEN MODIFIED (USED FOR EXIT WARNING)
-  const [isModified, setIsModified] = useState(false)
-
-  // CONTROLS VISIBILITY OF THE CONFIRMATION MODAL
-  const [showConfirm, setShowConfirm] = useState(false)
-
-  /* ── BROWSER EXIT WARNING ───────────────────────────────────
-     Fires the native browser "leave page?" dialog if the user
-     tries to close/refresh the tab with unsaved form data.
-     Cleaned up when component unmounts.
-     ─────────────────────────────────────────────────────────── */
-  useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      if (isModified) {
-        e.preventDefault()
-        e.returnValue = '' // REQUIRED FOR CHROME TO SHOW THE DIALOG
-      }
-    }
-    window.addEventListener('beforeunload', handleBeforeUnload)
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
-  }, [isModified])
-
-  /* ── HANDLERS ───────────────────────────────────────────── */
+  /* ── HANDLERS ─── */
 
   // UPDATE A TEXT FIELD AND MARK FORM AS MODIFIED
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
-    setIsModified(true)
   }
 
   // RECEIVE COORDINATES FROM THE MAP CLICK AND STORE IN FORM STATE
@@ -69,14 +43,13 @@ function AjouterPinPage() {
       latitude:  lat.toFixed(6),
       longitude: lng.toFixed(6),
     }))
-    setIsModified(true)
   }
 
   // VALIDATE FORM ON SUBMIT, THEN SHOW CONFIRMATION MODAL
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (!formData.latitude || !formData.longitude) {
-      alert('📍 Veuillez sélectionner un point sur la carte.')
+    if (!formData.latitude || !formData.longitude || !formData.audio_url || !formData.title) {
+      alert('📍 Veuillez sélectionner un point sur la carte et compléter les champs obligatoires du formulaire.')
       return
     }
     setShowConfirm(true)
@@ -93,13 +66,12 @@ function AjouterPinPage() {
       if (!response.ok) throw new Error('Erreur serveur')
 
       // DISABLE EXIT WARNING BEFORE NAVIGATING AWAY
-      setIsModified(false)
       setShowConfirm(false)
       navigate('/')
 
     } catch (err) {
       console.error('POST ERROR:', err)
-      alert('❌ Une erreur est survenue. Vérifie que ton serveur tourne.')
+      alert('❌ Une erreur est survenue. Vérifie que ton serveur tourne et que tous les champs soient remplis.')
       setShowConfirm(false)
     }
   }
@@ -108,7 +80,7 @@ function AjouterPinPage() {
   const handleCancel = () => setShowConfirm(false)
 
 
-  /* ── RENDER ─────────────────────────────────────────────── */
+  /* ── RENDER ─ */
   return (
     <div className="page">
       <h1>Ajouter un son</h1>
@@ -146,7 +118,7 @@ function AjouterPinPage() {
             onChange={handleChange}
             required
             aria-required="true"
-            placeholder="Ton nom ou pseudonyme"
+            placeholder="Votre nom ou pseudonyme"
           />
         </div>
 
@@ -163,7 +135,7 @@ function AjouterPinPage() {
             onChange={handleChange}
             required
             aria-required="true"
-            placeholder="https://soundcloud.com/..."
+            placeholder="Lien vers votre audio (Ex. https://soundcloud.com/...)"
           />
         </div>
 
@@ -176,7 +148,7 @@ function AjouterPinPage() {
             type="text"
             value={formData.location_name}
             onChange={handleChange}
-            placeholder="Ex : Métro Châtelet, ligne 4"
+            placeholder="Ex : Arbre au milieu de la place"
           />
         </div>
 
@@ -189,7 +161,7 @@ function AjouterPinPage() {
             value={formData.inspiration_text}
             onChange={handleChange}
             rows={4}
-            placeholder="Décris le son, le contexte, l'ambiance..."
+            placeholder="Décrivez le son, le contexte, l'ambiance..."
           />
         </div>
 
@@ -198,7 +170,7 @@ function AjouterPinPage() {
           <legend>
             Localisation <span aria-hidden="true">*</span>
           </legend>
-          <p className="form-hint">Clique sur la carte pour placer ton son 📍</p>
+          <p className="form-hint">Cliquez sur la carte pour placer ton son 📍</p>
 
           {/* INTERACTIVE MAP — CALLS handleLocationSelect ON CLICK */}
           <MapSelector
@@ -229,51 +201,13 @@ function AjouterPinPage() {
 
       {/* ── CONFIRMATION MODAL ── */}
       {showConfirm && (
-        <div
-          className="modal-overlay"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-title"
-        >
-          <div className="modal">
-            <h2 id="modal-title">Confirmer l'ajout</h2>
-            <p className="modal-subtitle">
-              Résumé des données qui seront enregistrées :
-            </p>
-
-            {/* SEMANTIC DEFINITION LIST FOR DATA SUMMARY */}
-            <dl className="modal-summary">
-              <dt>Titre</dt>
-              <dd>{formData.title}</dd>
-
-              <dt>Auteur</dt>
-              <dd>{formData.author_name}</dd>
-
-              <dt>URL audio</dt>
-              <dd className="modal-url">{formData.audio_url}</dd>
-
-              <dt>Lieu d'écoute</dt>
-              <dd>{formData.location_name || '—'}</dd>
-
-              <dt>Description</dt>
-              <dd>{formData.inspiration_text || '—'}</dd>
-
-              <dt>Coordonnées</dt>
-              <dd>{formData.latitude}, {formData.longitude}</dd>
-            </dl>
-
-            {/* ACTION BUTTONS: CONFIRM OR GO BACK TO EDITING */}
-            <div className="modal-actions">
-              <button onClick={handleConfirm} className="btn btn--primary">
-                ✅ Confirmer
-              </button>
-              <button onClick={handleCancel} className="btn btn--ghost">
-                ✏️ Continuer à éditer
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmModal
+          data={formData}
+          onConfirm={handleConfirm}
+          onCancel={() => setShowConfirm(false)}
+        />
       )}
+
 
     </div>
   )
