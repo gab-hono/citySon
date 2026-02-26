@@ -3,6 +3,9 @@
    Handles global layout: header, footer, routing shell.
    Conditionally renders the home page (map + hero) or
    inner pages via React Router's <Outlet />.
+   Updated: PinDetail is now rendered outside the map container
+   on mobile so it appears below the map and remains closeable,
+   while on desktop it keeps its absolute overlay behaviour.
    ============================================================ */
 
 import './App.css'
@@ -52,19 +55,37 @@ function App() {
               </Link>
             </div>
 
-            {/* MAP AREA: FILLS REMAINING SPACE, PIN DETAIL OVERLAYS ON TOP */}
-            <div className="home-map-placeholder">
+            {/* MAP AREA: FILLS REMAINING SPACE */}
+            {/* ON DESKTOP: PinDetail overlays on top of the map (absolute) */}
+            {/* ON MOBILE:  PinDetail renders BELOW the map (see .pin-detail-mobile-wrapper) */}
+            <div className="home-map-col">
 
-              {/* MAP COMPONEN: CALLS setSelectedPin WHEN A MARKER IS CLICKED */}
-              <MapView onPinSelect={setSelectedPin} />
+              <div className="home-map-placeholder">
+                {/* MAP COMPONENT: CALLS setSelectedPin WHEN A MARKER IS CLICKED */}
+                <MapView onPinSelect={setSelectedPin} />
 
-              {/* PIN DETAIL PANEL: ONLY MOUNTED WHEN A PIN IS SELECTED */}
+                {/* DESKTOP-ONLY OVERLAY — HIDDEN ON MOBILE VIA CSS */}
+                {selectedPin && (
+                  <div className="pin-detail-desktop-overlay">
+                    <PinDetail
+                      pin={selectedPin}
+                      onClose={() => setSelectedPin(null)}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* MOBILE-ONLY SLOT — RENDERED IN NORMAL FLOW BELOW THE MAP */}
+              {/* HIDDEN ON DESKTOP VIA CSS */}
               {selectedPin && (
-                <PinDetail
-                  pin={selectedPin}
-                  onClose={() => setSelectedPin(null)}
-                />
+                <div className="pin-detail-mobile-wrapper">
+                  <PinDetail
+                    pin={selectedPin}
+                    onClose={() => setSelectedPin(null)}
+                  />
+                </div>
               )}
+
             </div>
           </div>
 

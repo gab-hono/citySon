@@ -1,0 +1,150 @@
+/* ============================================================
+   HOME.CSS — HOME PAGE LAYOUT (HERO + MAP)
+   Mobile-first: hero on top, map below, stacked vertically.
+   Desktop (768px+): true 50/50 side-by-side split.
+
+   PinDetail responsive strategy:
+   - Mobile  → rendered BELOW the map in normal page flow
+               (.pin-detail-mobile-wrapper), so it is always
+               reachable and the close button is never hidden.
+   - Desktop → rendered as an absolute overlay ON TOP of the map
+               (.pin-detail-desktop-overlay), same as before.
+   ============================================================ */
+
+
+/* ══════════════════════════════════════════════
+   HOME WRAPPER
+   ══════════════════════════════════════════════ */
+
+/* MOBILE: STACKED COLUMN */
+.home {
+  display: flex;
+  flex-direction: column;
+}
+
+/* DESKTOP: SIDE-BY-SIDE ROW, FULL VIEWPORT HEIGHT */
+@media (min-width: 768px) {
+  .home {
+    flex-direction: row;
+    height: calc(100vh - var(--header-height) - 41px);
+  }
+}
+
+
+/* ══════════════════════════════════════════════
+   HERO SECTION
+   ══════════════════════════════════════════════ */
+
+.home-box {
+  padding: 2rem 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.home-title {
+  font-size: clamp(2rem, 10vw, 5rem);
+  font-weight: 800;
+  color: var(--color-accent);
+  line-height: 1;
+}
+
+.home-subtitle {
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+  .home-box {
+    width: 50%;
+    flex-shrink: 0;
+    padding: 3rem 2rem;
+    border-right: 1px solid var(--color-border);
+    justify-content: center;
+  }
+}
+
+
+/* ══════════════════════════════════════════════
+   MAP COLUMN
+   ══════════════════════════════════════════════ */
+
+/* WRAPS THE MAP PLACEHOLDER + THE MOBILE PIN DETAIL SLOT.
+   On mobile: stacks them vertically in normal document flow.
+   On desktop: takes the right half and acts as positioning
+   context for the absolute overlay. */
+.home-map-col {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .home-map-col {
+    width: 50%;
+    height: 100%;
+    position: relative;
+  }
+}
+
+/* MAP CONTAINER — EXPLICIT HEIGHT REQUIRED SO LEAFLET CAN MEASURE IT */
+.home-map-placeholder {
+  height: 55vw;
+  min-height: 280px;
+  max-height: 420px;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  /* POSITIONING CONTEXT FOR THE DESKTOP OVERLAY */
+  position: relative;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .home-map-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: unset;
+    max-height: unset;
+    border-top: none;
+  }
+}
+
+
+/* ══════════════════════════════════════════════
+   PIN DETAIL — RESPONSIVE SLOTS
+   ══════════════════════════════════════════════ */
+
+/* ── DESKTOP OVERLAY (inside the map, absolute) ──
+   Hidden on mobile — the mobile slot is used instead. */
+.pin-detail-desktop-overlay {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .pin-detail-desktop-overlay {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+}
+
+/* ── MOBILE SLOT (below the map, normal flow) ──
+   Overrides the absolute positioning of .pin-detail so the
+   panel sits below the map and is always fully visible.
+   Hidden on desktop — the overlay is used instead. */
+.pin-detail-mobile-wrapper .pin-detail {
+  position: static;   /* cancel the absolute used on desktop */
+  animation: none;    /* slide-up animation assumes absolute placement */
+  border-top: 2px solid var(--color-accent);
+  max-height: none;   /* let content determine the height */
+  overflow-y: visible;
+}
+
+@media (min-width: 768px) {
+  .pin-detail-mobile-wrapper {
+    display: none;
+  }
+}

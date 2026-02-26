@@ -1,0 +1,118 @@
+/* ============================================================
+   BUTTONS.CSS — ALL BUTTON VARIANTS
+   Uses .btn as the base class with modifier classes for
+   each visual variant.
+   ============================================================ */
+
+
+/* ── BASE BUTTON ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.4rem;
+  border-radius: var(--radius-full);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all var(--transition);
+  text-decoration: none;
+}
+
+/* SIZE MODIFIER — COMPACT VERSION */
+.btn--sm {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.8rem;
+}
+
+
+/* ── VARIANTS ── */
+
+/* PRIMARY: ACCENT FILL */
+.btn--primary {
+  background: var(--color-accent);
+  color: #000;
+}
+
+.btn--primary:hover {
+  opacity: 0.85;
+}
+
+/* GHOST: TRANSPARENT WITH BORDER */
+.btn--ghost {
+  background: transparent;
+  color: var(--color-muted);
+  border: 1px solid var(--color-border);
+}
+
+.btn--ghost:hover {
+  border-color: var(--color-text);
+  color: var(--color-text);
+}
+
+/* DANGER FILLED */
+.btn--danger {
+  background: var(--color-danger);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-full);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  transition: all var(--transition);
+}
+
+.btn--danger:hover {
+  opacity: 0.85;
+}
+
+/* DANGER OUTLINE */
+.btn--danger-ghost {
+  background: transparent;
+  color: var(--color-danger);
+  border: 1px solid rgba(224, 82, 82, 0.4);
+  border-radius: var(--radius-full);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all var(--transition);
+}
+
+.btn--danger-ghost:hover {
+  background: rgba(224, 82, 82, 0.1);
+  border-color: var(--color-danger);
+}
+
+/* FAVORITE — INACTIVE STATE */
+.btn--favori {
+  background: transparent;
+  color: var(--color-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.5rem 1.2rem;
+  transition: all var(--transition);
+}
+
+.btn--favori:hover {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+/* FAVORITE — ACTIVE STATE (PIN IS IN FAVORITES) */
+.btn--favori-active {
+  background: rgba(224, 82, 82, 0.12);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.5rem 1.2rem;
+  transition: all var(--transition);
+}
+
+.btn--favori-active:hover {
+  background: rgba(224, 82, 82, 0.2);
+}

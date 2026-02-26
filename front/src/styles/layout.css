@@ -1,0 +1,141 @@
+/* ============================================================
+   LAYOUT.CSS — APP SHELL, HEADER, FOOTER
+   Covers the outermost structural elements that are always
+   present regardless of the current route.
+   ============================================================ */
+
+
+/* ══════════════════════════════════════════════
+   APP SHELL
+   ══════════════════════════════════════════════ */
+
+/* FULL-HEIGHT COLUMN: HEADER / MAIN / FOOTER */
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* MAIN CONTENT AREA GROWS TO FILL THE SPACE BETWEEN HEADER AND FOOTER */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* ══════════════════════════════════════════════
+   HEADER
+   ══════════════════════════════════════════════ */
+
+/* STICKY HEADER STAYS AT TOP WHILE SCROLLING */
+.header {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  background: var(--color-bg);
+  z-index: 100;
+}
+
+.logo {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  letter-spacing: 0.05em;
+}
+
+/* NAVIGATION LINK GROUP */
+.nav {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.nav-link {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  transition: color var(--transition);
+}
+
+.nav-link:hover {
+  color: var(--color-text);
+}
+
+/* CTA BUTTON STYLE FOR THE "ADD SOUND" NAV LINK */
+.nav-link--cta {
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.nav-link--cta:hover {
+  background: var(--color-accent);
+  color: #000;
+}
+
+@media (min-width: 768px) {
+  .header {
+    padding: 0 1.5rem;
+  }
+  .nav {
+    gap: 1.5rem;
+  }
+  .nav-link {
+    font-size: 0.9rem;
+  }
+  .nav-link--cta {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.9rem;
+  }
+}
+
+
+/* ══════════════════════════════════════════════
+   INNER PAGES (PROFIL, FAVORITES, AJOUTER)
+   ══════════════════════════════════════════════ */
+
+/* CENTERED CONTENT CONTAINER WITH MAX WIDTH */
+.page {
+  padding: 1.5rem 1rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.page h1 {
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+  color: var(--color-accent);
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding: 2rem 2rem;
+    max-width: 860px;
+  }
+
+  .page h1 {
+    font-size: 1.8rem;
+  }
+}
+
+
+/* ══════════════════════════════════════════════
+   FOOTER
+   ══════════════════════════════════════════════ */
+
+.footer {
+  padding: 0.8rem 1rem;
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 0.78rem;
+}

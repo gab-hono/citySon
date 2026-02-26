@@ -1,0 +1,36 @@
+/* ============================================================
+   TOAST.CSS — GLOBAL SUCCESS NOTIFICATION
+   The Toast component renders a brief confirmation message
+   fixed at the bottom center of the screen.
+   ============================================================ */
+
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-surface);
+  border: 1px solid var(--color-accent);
+  color: var(--color-text);
+  padding: 0.75rem 1.4rem;
+  border-radius: var(--radius-full);
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  z-index: 99999;
+  white-space: nowrap;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  animation: toastIn 0.25s ease-out;
+}
+
+.toast-icon {
+  color: var(--color-accent);
+  font-size: 1rem;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}

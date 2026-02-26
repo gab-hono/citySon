@@ -1,0 +1,129 @@
+/* ============================================================
+   FORMS.CSS — FORM FIELDS, VALIDATION, MAP FIELDSET
+   Used by AjouterPinPage and EditModal.
+   ============================================================ */
+
+
+/* ── FORM WRAPPER ── */
+
+/* VERTICAL STACK WITH CONSISTENT GAP BETWEEN FIELDS */
+.ajouter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+@media (min-width: 768px) {
+  .ajouter-form {
+    gap: 1.4rem;
+  }
+}
+
+/* SUBMIT BUTTON — FULL WIDTH ON MOBILE, AUTO ON DESKTOP */
+.ajouter-btn {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .ajouter-btn {
+    width: auto;
+  }
+}
+
+
+/* ── INDIVIDUAL FIELD (LABEL + INPUT) ── */
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+/* LABEL */
+.form-field label,
+.form-fieldset legend {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+  letter-spacing: 0.02em;
+}
+
+/* REQUIRED ASTERISK IN ACCENT COLOR */
+.form-field label span,
+.form-fieldset legend span {
+  color: var(--color-accent);
+}
+
+/* INPUT AND TEXTAREA */
+.form-field input,
+.form-field textarea {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-family: var(--font);
+  font-size: 0.95rem;
+  padding: 0.65rem 0.9rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  width: 100%;
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  color: var(--color-muted);
+}
+
+/* ACCESSIBLE FOCUS RING */
+.form-field input:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(200, 241, 53, 0.18);
+}
+
+
+/* ── VALIDATION ERROR STATE ── */
+
+/* RED BORDER ON THE INPUT WHEN ITS VALUE IS INVALID */
+.input--error {
+  border-color: var(--color-danger) !important;
+  box-shadow: 0 0 0 3px rgba(224, 82, 82, 0.18) !important;
+}
+
+/* ERROR MESSAGE DISPLAYED BELOW THE INVALID INPUT */
+.form-error {
+  color: var(--color-danger);
+  font-size: 0.82rem;
+  margin-top: 0.2rem;
+  line-height: 1.4;
+}
+
+
+/* ── MAP SELECTOR FIELDSET ── */
+
+/* FIELDSET WRAPPING THE MAP COORDINATE SELECTOR */
+.form-fieldset {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+/* HINT TEXT SHOWN BELOW THE FIELDSET LEGEND */
+.form-hint {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+
+/* LIVE COORDINATE FEEDBACK BELOW THE MAP */
+.coords-feedback {
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+}
+
+.coords-ok    { color: var(--color-accent); }
+.coords-empty { color: var(--color-muted); }
