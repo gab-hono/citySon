@@ -8,14 +8,14 @@ import { useState } from "react"
 import AbandonWarningModal from "./AbandonWarningModal"
 import MapSelector from "./MapSelector"
 
-const API = 'http://localhost:4242'
+const API = 'https://city-son.vercel.app/' 
 
 // RETURNS TRUE ONLY IF THE URL BELONGS TO SOUNDCLOUD
 // MIRRORS THE SAME HELPER USED IN AjouterPinPage
 function isSoundCloudUrl(value) {
   try {
     const { hostname } = new URL(value)
-    return hostname === 'soundcloud.com' || hostname === 'www.soundcloud.com'
+    return hostname === 'soundcloud.com' || hostname === 'www.soundcloud.com' || hostname === 'on.soundcloud.com'
   } catch {
     return false
   }

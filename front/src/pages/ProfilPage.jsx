@@ -14,7 +14,7 @@ import PinCard from '../components/PinCard'
 
 // REFERENCE USER — USED AS PLACEHOLDER UNTIL AUTH IS IMPLEMENTED
 const CURRENT_USER_ID = '44360181-1cbf-4a49-ac4c-af815a001ae1'
-const API = 'http://localhost:4242'
+const API = 'https://city-son.vercel.app'
 
 export default function ProfilPage() {
 

@@ -53,7 +53,7 @@ export default function MapView({ onPinSelect }) {
 
   // FETCH ALL PINS FROM API WHEN COMPONENT FIRST MOUNTS
   useEffect(() => {
-    fetch('http://localhost:4242/pins')
+    fetch('https://city-son.vercel.app/pins')
       .then(res => res.json())
       .then(data => setPins(data.pins))
       .catch(err => console.error('ERROR FETCHING PINS:', err))

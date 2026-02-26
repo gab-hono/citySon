@@ -76,7 +76,7 @@ function AjouterPinPage() {
   // SEND THE FORM DATA TO THE BACKEND AFTER THE USER CONFIRMS IN THE MODAL
   const handleConfirm = async () => {
     try {
-      const response = await fetch('http://localhost:4242/nouveaupin', {
+      const response = await fetch('https://city-son.vercel.app/nouveaupin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

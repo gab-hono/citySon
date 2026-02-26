@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react'
 import Toast from '../components/Toast'
 
 const CURRENT_USER_ID = '44360181-1cbf-4a49-ac4c-af815a001ae1'
-const API = 'http://localhost:4242'
+const API = 'https://city-son.vercel.app'
 
 function FavoriCard({ pin, onRemove }) {
   return (

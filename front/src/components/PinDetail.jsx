@@ -10,7 +10,7 @@
 import { useState, useEffect } from 'react'
 
 const CURRENT_USER_ID = '44360181-1cbf-4a49-ac4c-af815a001ae1'
-const API = 'http://localhost:4242'
+const API = 'https://city-son.vercel.app/'
 
 /* ── SOUNDCLOUD EMBED HELPER ────────────────────────────────
    Converts a standard SoundCloud track URL into the src URL
