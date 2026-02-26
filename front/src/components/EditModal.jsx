@@ -1,14 +1,7 @@
 /* ============================================================
    EDITMODAL.JSX — EDIT FORM MODAL FOR AN EXISTING PIN
-   Allows the user to update all fields of a posted pin.
-   - Pre-fills the form with the current pin data
-   - Shows an AbandonWarningModal if the user tries to close
-     the modal after making changes
-   - Sends a PUT request to the API on confirmation
-   Props:
-   - pin    : the pin object to edit (used to pre-fill the form)
-   - onSave : called with the updated pin object after a successful save
-   - onClose: called when the modal should be closed without saving
+   Updated: the audio URL field now validates that the link
+   belongs to SoundCloud, consistent with AjouterPinPage.
    ============================================================ */
 
 import { useState } from "react"
@@ -16,6 +9,17 @@ import AbandonWarningModal from "./AbandonWarningModal"
 import MapSelector from "./MapSelector"
 
 const API = 'http://localhost:4242'
+
+// RETURNS TRUE ONLY IF THE URL BELONGS TO SOUNDCLOUD
+// MIRRORS THE SAME HELPER USED IN AjouterPinPage
+function isSoundCloudUrl(value) {
+  try {
+    const { hostname } = new URL(value)
+    return hostname === 'soundcloud.com' || hostname === 'www.soundcloud.com'
+  } catch {
+    return false
+  }
+}
 
 export default function EditModal({ pin, onSave, onClose }) {
 
@@ -30,15 +34,19 @@ export default function EditModal({ pin, onSave, onClose }) {
     longitude:        String(pin.longitude ?? ''),
   })
 
+  // INLINE ERROR MESSAGE FOR THE AUDIO URL FIELD (NULL = NO ERROR)
+  const [urlError, setUrlError] = useState(null)
+
   // CONTROLS VISIBILITY OF THE "ABANDON CHANGES?" WARNING MODAL
   const [showAbandonWarning, setShowAbandonWarning] = useState(false)
 
   // TRUE WHILE THE PUT REQUEST IS IN FLIGHT — DISABLES THE SAVE BUTTON
   const [saving, setSaving] = useState(false)
 
-  // UPDATE A SINGLE FORM FIELD BY NAME
+  // UPDATE A SINGLE FORM FIELD AND CLEAR THE URL ERROR WHEN THE USER RETYPES
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
+    if (e.target.name === 'audio_url') setUrlError(null)
   }
 
   // RECEIVE COORDINATES FROM THE MAP CLICK AND STORE IN FORM STATE
@@ -55,12 +63,19 @@ export default function EditModal({ pin, onSave, onClose }) {
     setShowAbandonWarning(true)
   }
 
-  // SEND THE UPDATED FORM DATA TO THE API VIA PUT REQUEST
+  // VALIDATE THE URL THEN SEND THE UPDATED DATA TO THE API VIA PUT REQUEST
   const handleSave = async () => {
-    if (!formData.title || !formData.audio_url || !formData.latitude || !formData.longitude) {
+    if (!formData.title || !formData.latitude || !formData.longitude) {
       alert('Veuillez compléter les champs obligatoires.')
       return
     }
+
+    // BLOCK SAVE IF THE AUDIO URL IS NOT A VALID SOUNDCLOUD LINK
+    if (!isSoundCloudUrl(formData.audio_url)) {
+      setUrlError('Seuls les liens SoundCloud sont acceptés. Ex : https://soundcloud.com/artiste/titre')
+      return
+    }
+
     setSaving(true)
     try {
       const res = await fetch(`${API}/pins/${pin.id}`, {
@@ -112,9 +127,9 @@ export default function EditModal({ pin, onSave, onClose }) {
               />
             </div>
 
-            {/* AUDIO URL — REQUIRED */}
+            {/* SOUNDCLOUD URL — REQUIRED, VALIDATED ON SAVE */}
             <div className="form-field">
-              <label htmlFor="edit-audio_url">URL de l'audio <span>*</span></label>
+              <label htmlFor="edit-audio_url">Lien SoundCloud <span>*</span></label>
               <input
                 id="edit-audio_url"
                 name="audio_url"
@@ -122,7 +137,17 @@ export default function EditModal({ pin, onSave, onClose }) {
                 value={formData.audio_url}
                 onChange={handleChange}
                 required
+                aria-describedby={urlError ? 'edit-audio-url-error' : undefined}
+                aria-invalid={!!urlError}
+                placeholder="https://soundcloud.com/artiste/titre"
+                className={urlError ? 'input--error' : ''}
               />
+              {/* INLINE ERROR — SHOWN ONLY WHEN THE URL IS NOT FROM SOUNDCLOUD */}
+              {urlError && (
+                <p id="edit-audio-url-error" className="form-error" role="alert">
+                  {urlError}
+                </p>
+              )}
             </div>
 
             {/* LISTENING LOCATION — OPTIONAL */}

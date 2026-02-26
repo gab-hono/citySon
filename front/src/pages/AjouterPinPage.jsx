@@ -1,7 +1,8 @@
 /* ============================================================
    AJOUTERPIN.JSX — "ADD A SOUND" FORM PAGE
-   Actualizado: eliminado campo "Auteur" — se llena automáticamente
-   con el username del usuario activo en el backend.
+   Updated: the audio URL field now only accepts SoundCloud links.
+   A validation helper checks the URL format on submit and
+   displays an inline error if the link is not from SoundCloud.
    ============================================================ */
 
 import { useState } from 'react'
@@ -19,15 +20,33 @@ const INITIAL_FORM = {
   technology: '',
 }
 
+// RETURNS TRUE ONLY IF THE URL BELONGS TO SOUNDCLOUD
+// ACCEPTS: soundcloud.com/... AND www.soundcloud.com/...
+// REJECTS: any other domain or malformed URL
+function isSoundCloudUrl(value) {
+  try {
+    const { hostname } = new URL(value)
+    return hostname === 'soundcloud.com' || hostname === 'www.soundcloud.com'
+  } catch {
+    return false
+  }
+}
+
 function AjouterPinPage() {
   const navigate = useNavigate()
-  const [formData, setFormData]   = useState(INITIAL_FORM)
+  const [formData, setFormData]       = useState(INITIAL_FORM)
   const [showConfirm, setShowConfirm] = useState(false)
 
+  // INLINE ERROR MESSAGE FOR THE AUDIO URL FIELD (NULL = NO ERROR)
+  const [urlError, setUrlError]       = useState(null)
+
+  // UPDATE A SINGLE FORM FIELD AND CLEAR THE URL ERROR WHEN THE USER RETYPES
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
+    if (e.target.name === 'audio_url') setUrlError(null)
   }
 
+  // RECEIVE COORDINATES FROM THE MAP CLICK AND STORE IN FORM STATE
   const handleLocationSelect = (lat, lng) => {
     setFormData(prev => ({
       ...prev,
@@ -36,15 +55,25 @@ function AjouterPinPage() {
     }))
   }
 
+  // VALIDATE ALL REQUIRED FIELDS BEFORE SHOWING THE CONFIRMATION MODAL
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (!formData.latitude || !formData.longitude || !formData.audio_url || !formData.title) {
+
+    // CHECK THAT THE AUDIO URL IS A VALID SOUNDCLOUD LINK
+    if (!isSoundCloudUrl(formData.audio_url)) {
+      setUrlError('Seuls les liens SoundCloud sont acceptés. Ex : https://soundcloud.com/artiste/titre')
+      return
+    }
+
+    if (!formData.latitude || !formData.longitude || !formData.title) {
       alert('📍 Veuillez sélectionner un point sur la carte et compléter les champs obligatoires.')
       return
     }
+
     setShowConfirm(true)
   }
 
+  // SEND THE FORM DATA TO THE BACKEND AFTER THE USER CONFIRMS IN THE MODAL
   const handleConfirm = async () => {
     try {
       const response = await fetch('http://localhost:4242/nouveaupin', {
@@ -68,7 +97,7 @@ function AjouterPinPage() {
 
       <form onSubmit={handleSubmit} noValidate className="ajouter-form">
 
-        {/* TITRE */}
+        {/* TITLE — REQUIRED */}
         <div className="form-field">
           <label htmlFor="title">
             Titre du son <span aria-hidden="true">*</span>
@@ -85,10 +114,10 @@ function AjouterPinPage() {
           />
         </div>
 
-        {/* AUDIO URL */}
+        {/* SOUNDCLOUD URL — REQUIRED, VALIDATED ON SUBMIT */}
         <div className="form-field">
           <label htmlFor="audio_url">
-            URL de l'audio <span aria-hidden="true">*</span>
+            Lien SoundCloud <span aria-hidden="true">*</span>
           </label>
           <input
             id="audio_url"
@@ -98,11 +127,20 @@ function AjouterPinPage() {
             onChange={handleChange}
             required
             aria-required="true"
-            placeholder="Lien vers votre audio (Ex. https://soundcloud.com/...)"
+            aria-describedby={urlError ? 'audio-url-error' : undefined}
+            aria-invalid={!!urlError}
+            placeholder="https://soundcloud.com/artiste/titre"
+            className={urlError ? 'input--error' : ''}
           />
+          {/* INLINE ERROR — SHOWN ONLY WHEN THE URL IS NOT FROM SOUNDCLOUD */}
+          {urlError && (
+            <p id="audio-url-error" className="form-error" role="alert">
+              {urlError}
+            </p>
+          )}
         </div>
 
-        {/* LIEU D'ÉCOUTE */}
+        {/* LISTENING LOCATION — OPTIONAL */}
         <div className="form-field">
           <label htmlFor="location_name">Lieu d'écoute</label>
           <input
@@ -115,7 +153,7 @@ function AjouterPinPage() {
           />
         </div>
 
-        {/* DESCRIPTION */}
+        {/* DESCRIPTION / INSPIRATION — OPTIONAL */}
         <div className="form-field">
           <label htmlFor="inspiration_text">Description / Inspiration</label>
           <textarea
@@ -128,7 +166,7 @@ function AjouterPinPage() {
           />
         </div>
 
-        {/* TECHNOLOGIES */}
+        {/* TECHNOLOGIES USED — OPTIONAL */}
         <div className="form-field">
           <label htmlFor="technology">Technologies utilisées</label>
           <input
@@ -141,17 +179,21 @@ function AjouterPinPage() {
           />
         </div>
 
-        {/* MAPA */}
+        {/* MAP COORDINATE SELECTOR — REQUIRED */}
         <fieldset className="form-fieldset">
           <legend>
             Localisation <span aria-hidden="true">*</span>
           </legend>
           <p className="form-hint">Cliquez sur la carte pour placer ton son 📍</p>
+
+          {/* INTERACTIVE MAP — CALLS handleLocationSelect ON CLICK */}
           <MapSelector
             lat={formData.latitude}
             lng={formData.longitude}
             onLocationSelect={handleLocationSelect}
           />
+
+          {/* LIVE REGION: ANNOUNCES COORDINATE CHANGES TO SCREEN READERS */}
           <div aria-live="polite" className="coords-feedback">
             {formData.latitude && formData.longitude ? (
               <span className="coords-ok">
@@ -169,6 +211,7 @@ function AjouterPinPage() {
 
       </form>
 
+      {/* CONFIRMATION MODAL — SHOWN AFTER SUCCESSFUL VALIDATION */}
       {showConfirm && (
         <ConfirmModal
           data={formData}
