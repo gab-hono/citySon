@@ -1,11 +1,7 @@
 /* ============================================================
    AJOUTERPIN.JSX — "ADD A SOUND" FORM PAGE
-   Allows a user to submit a new sound pin to the database.
-   Features:
-   - Controlled form with all required fields
-   - Interactive Leaflet map for coordinate selection
-   - Confirmation modal with data summary before POST
-   - beforeunload warning if user tries to leave with unsaved data
+   Actualizado: eliminado campo "Auteur" — se llena automáticamente
+   con el username del usuario activo en el backend.
    ============================================================ */
 
 import { useState } from 'react'
@@ -17,26 +13,21 @@ const INITIAL_FORM = {
   title: '',
   inspiration_text: '',
   audio_url: '',
-  author_name: '',
   location_name: '',
   latitude: '',
   longitude: '',
+  technology: '',
 }
 
 function AjouterPinPage() {
+  const navigate = useNavigate()
+  const [formData, setFormData]   = useState(INITIAL_FORM)
+  const [showConfirm, setShowConfirm] = useState(false)
 
-  const navigate = useNavigate() // ALLOWS TO NAVIGATE DIRECTLY AFTER A BUTTON ACTION
-  const [formData, setFormData] = useState(INITIAL_FORM) // DECLARES THE INITIAL DATA OF THE FORM AND STORES THE INFORMATION ON THE INPUT FIELDS
-  const [showConfirm, setShowConfirm] = useState(false) // CONTROLS THE VISIBILITY OF THE CONFIRMATION MODAL
-
-  /* ── HANDLERS ─── */
-
-  // UPDATE A TEXT FIELD AND MARK FORM AS MODIFIED
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  // RECEIVE COORDINATES FROM THE MAP CLICK AND STORE IN FORM STATE
   const handleLocationSelect = (lat, lng) => {
     setFormData(prev => ({
       ...prev,
@@ -45,17 +36,15 @@ function AjouterPinPage() {
     }))
   }
 
-  // VALIDATE FORM ON SUBMIT, THEN SHOW CONFIRMATION MODAL
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!formData.latitude || !formData.longitude || !formData.audio_url || !formData.title) {
-      alert('📍 Veuillez sélectionner un point sur la carte et compléter les champs obligatoires du formulaire.')
+      alert('📍 Veuillez sélectionner un point sur la carte et compléter les champs obligatoires.')
       return
     }
     setShowConfirm(true)
   }
 
-  // SEND DATA TO BACKEND AFTER USER CONFIRMS IN MODAL
   const handleConfirm = async () => {
     try {
       const response = await fetch('http://localhost:4242/nouveaupin', {
@@ -64,11 +53,8 @@ function AjouterPinPage() {
         body: JSON.stringify(formData),
       })
       if (!response.ok) throw new Error('Erreur serveur')
-
-      // DISABLE EXIT WARNING BEFORE NAVIGATING AWAY
       setShowConfirm(false)
       navigate('/')
-
     } catch (err) {
       console.error('POST ERROR:', err)
       alert('❌ Une erreur est survenue. Vérifie que ton serveur tourne et que tous les champs soient remplis.')
@@ -76,19 +62,13 @@ function AjouterPinPage() {
     }
   }
 
-  // CLOSE MODAL AND RETURN TO FORM WITHOUT LOSING DATA
-  const handleCancel = () => setShowConfirm(false)
-
-
-  /* ── RENDER ─ */
   return (
     <div className="page">
       <h1>Ajouter un son</h1>
 
-      {/* ── MAIN FORM ── */}
       <form onSubmit={handleSubmit} noValidate className="ajouter-form">
 
-        {/* TITLE FIELD */}
+        {/* TITRE */}
         <div className="form-field">
           <label htmlFor="title">
             Titre du son <span aria-hidden="true">*</span>
@@ -105,24 +85,7 @@ function AjouterPinPage() {
           />
         </div>
 
-        {/* AUTHOR FIELD */}
-        <div className="form-field">
-          <label htmlFor="author_name">
-            Auteur <span aria-hidden="true">*</span>
-          </label>
-          <input
-            id="author_name"
-            name="author_name"
-            type="text"
-            value={formData.author_name}
-            onChange={handleChange}
-            required
-            aria-required="true"
-            placeholder="Votre nom ou pseudonyme"
-          />
-        </div>
-
-        {/* AUDIO URL FIELD */}
+        {/* AUDIO URL */}
         <div className="form-field">
           <label htmlFor="audio_url">
             URL de l'audio <span aria-hidden="true">*</span>
@@ -139,7 +102,7 @@ function AjouterPinPage() {
           />
         </div>
 
-        {/* LISTENING LOCATION FIELD (OPTIONAL) */}
+        {/* LIEU D'ÉCOUTE */}
         <div className="form-field">
           <label htmlFor="location_name">Lieu d'écoute</label>
           <input
@@ -152,7 +115,7 @@ function AjouterPinPage() {
           />
         </div>
 
-        {/* DESCRIPTION / INSPIRATION FIELD (OPTIONAL) */}
+        {/* DESCRIPTION */}
         <div className="form-field">
           <label htmlFor="inspiration_text">Description / Inspiration</label>
           <textarea
@@ -165,21 +128,30 @@ function AjouterPinPage() {
           />
         </div>
 
-        {/* MAP COORDINATE SELECTOR FIELDSET */}
+        {/* TECHNOLOGIES */}
+        <div className="form-field">
+          <label htmlFor="technology">Technologies utilisées</label>
+          <input
+            id="technology"
+            name="technology"
+            type="text"
+            value={formData.technology}
+            onChange={handleChange}
+            placeholder="Ex : Max/MSP, Ableton Live..."
+          />
+        </div>
+
+        {/* MAPA */}
         <fieldset className="form-fieldset">
           <legend>
             Localisation <span aria-hidden="true">*</span>
           </legend>
           <p className="form-hint">Cliquez sur la carte pour placer ton son 📍</p>
-
-          {/* INTERACTIVE MAP — CALLS handleLocationSelect ON CLICK */}
           <MapSelector
             lat={formData.latitude}
             lng={formData.longitude}
             onLocationSelect={handleLocationSelect}
           />
-
-          {/* LIVE REGION: ANNOUNCES COORDINATE CHANGES TO SCREEN READERS */}
           <div aria-live="polite" className="coords-feedback">
             {formData.latitude && formData.longitude ? (
               <span className="coords-ok">
@@ -191,15 +163,12 @@ function AjouterPinPage() {
           </div>
         </fieldset>
 
-        {/* SUBMIT BUTTON */}
         <button type="submit" className="btn btn--primary ajouter-btn">
           Ajouter le son
         </button>
 
       </form>
 
-
-      {/* ── CONFIRMATION MODAL ── */}
       {showConfirm && (
         <ConfirmModal
           data={formData}
@@ -207,8 +176,6 @@ function AjouterPinPage() {
           onCancel={() => setShowConfirm(false)}
         />
       )}
-
-
     </div>
   )
 }
