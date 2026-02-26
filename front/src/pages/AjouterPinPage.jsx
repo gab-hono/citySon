@@ -26,7 +26,7 @@ const INITIAL_FORM = {
 function isSoundCloudUrl(value) {
   try {
     const { hostname } = new URL(value)
-    return hostname === 'soundcloud.com' || hostname === 'www.soundcloud.com'
+    return hostname === 'soundcloud.com' || hostname === 'www.soundcloud.com' || hostname === 'on.soundcloud.com'
   } catch {
     return false
   }
