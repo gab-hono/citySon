@@ -78,7 +78,7 @@ export default function PinDetail({ pin, onClose }) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ pin_id: pin.id }),
         })
-        // 409 CONFLICT MEANS IT WAS ALREADY A FAVORITE — SYNC STATE SILENTLY
+        // 409 CONFLICT MEANS IT WAS ALREADY A FAVORITE. SYNC STATE SILENTLY
         if (res.status === 409) { setIsFavori(true); return }
         if (!res.ok) throw new Error()
         setIsFavori(true)
@@ -121,7 +121,7 @@ export default function PinDetail({ pin, onClose }) {
           <span className="pin-detail-text">{pin.location_name}</span>
         </div>
 
-        {/* SOUNDCLOUD EMBEDDED PLAYER — REPLACES THE PLAIN EXTERNAL LINK */}
+        {/* SOUNDCLOUD EMBEDDED PLAYER : REPLACES THE PLAIN EXTERNAL LINK !!!!!!!!!! */}
         {pin.audio_url && (
           <div className="pin-detail-field pin-detail-field--full pin-detail-field--audio">
             <span className="pin-detail-label">Écouter</span>
@@ -138,7 +138,7 @@ export default function PinDetail({ pin, onClose }) {
           </div>
         )}
 
-        {/* DESCRIPTION — SHOWN ONLY IF IT EXISTS */}
+        {/* DESCRIPTION : SHOWN ONLY IF IT EXISTS */}
         {pin.inspiration_text && (
           <div className="pin-detail-field pin-detail-field--full">
             <span className="pin-detail-label">Description</span>
@@ -146,7 +146,7 @@ export default function PinDetail({ pin, onClose }) {
           </div>
         )}
 
-        {/* TECHNOLOGIES — SHOWN ONLY IF THEY EXIST */}
+        {/* TECHNOLOGIES : SHOWN ONLY IF THEY EXIST */}
         {pin.technology && (
           <div className="pin-detail-field pin-detail-field--full">
             <span className="pin-detail-label">Technologies pour la création</span>

@@ -15,7 +15,7 @@ app.use(express.json());
 const CURRENT_USER_ID = '44360181-1cbf-4a49-ac4c-af815a001ae1';
 
 // ══════════════════════════════════════════════
-// ROUTES — AUDIO_PIN & USER
+// ROUTES : AUDIO_PIN & USER
 // ══════════════════════════════════════════════
 
 app.get('/pins', async (_, res) => {
@@ -56,7 +56,7 @@ app.get('/users/:id/pins', async (req, res) => {
 });
 
 // ══════════════════════════════════════════════
-// ROUTE POST — AJOUTER UN NOUVEAU PIN / FOR POSTING A NEW PIN
+// ROUTE POST : AJOUTER UN NOUVEAU PIN / FOR POSTING A NEW PIN
 // ══════════════════════════════════════════════
 
 app.post('/nouveaupin', async (req, res) => {
@@ -114,7 +114,7 @@ app.post('/nouveaupin', async (req, res) => {
 });
 
 // ══════════════════════════════════════════════
-// ROUTE PUT — MODIFIER UN PIN / MODIFYING A PIN
+// ROUTE PUT : MODIFIER UN PIN / MODIFYING A PIN
 // ══════════════════════════════════════════════
 
 app.put('/pins/:id', async (req, res) => {
@@ -164,7 +164,7 @@ app.put('/pins/:id', async (req, res) => {
 });
 
 // ══════════════════════════════════════════════
-// ROUTE DELETE — SUPPRIMER UN PIN
+// ROUTE DELETE : SUPPRIMER UN PIN
 // ══════════════════════════════════════════════
 
 app.delete('/pins/:id', async (req, res) => {
